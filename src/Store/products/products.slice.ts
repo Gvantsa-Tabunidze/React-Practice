@@ -1,11 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { postProducts } from "./product.thanks"
+import { postProducts, type Product } from "./product.thanks"
 
-const initialState = {
-    products: [],
-    loading: false,
+
+interface ProductsState{
+    products: Product[],
+    loading: false | true,
+    error: string | null
 }
 
+const initialState: ProductsState = {
+    products: [],
+    loading: false,
+    error: null
+}
 
 const productsSlice = createSlice({
     name: 'products',
@@ -14,15 +21,16 @@ const productsSlice = createSlice({
     extraReducers: (builder)=>{
         builder 
         .addCase(postProducts.pending, (state)=>{
-            state.loading = true
+            state.loading = true;
+            state.error = null;
         })
         .addCase(postProducts.fulfilled, (state,action)=>{
-            state.loading = false,
+            state.loading = false;
             state.products.push(action.payload)
         })
         .addCase(postProducts.rejected, (state,action)=>{
             state.loading = false,
-            state.error = action.payload
+            state.error = action.payload ?? 'Unknown error'
         })
      
     }
